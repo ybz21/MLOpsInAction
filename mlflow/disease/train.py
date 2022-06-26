@@ -5,7 +5,7 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import RidgeClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, recall_score, precision_score, f1_score
 
 
 @click.command(help="This program does ...")
@@ -23,23 +23,25 @@ def task(data_path):
         lin_model = RidgeClassifier()
         lin_model.fit(x_train, y_train)
 
+        mlflow.sklearn.log_model(lin_model, "linear-model")
+
         y_pred = lin_model.predict(x_test)
-
         report = classification_report(y_test, y_pred)
-
         print(report)
-        # mlflow.log_metric("report",report)
 
-        mlflow.sklearn.log_model(lin_model, "model")
-        mlflow.sklearn.save_model(lin_model, "model")
-
-        clsf_report = pd.DataFrame(classification_report(y_test, y_pred)).transpose()
+        clsf_report = pd.DataFrame(classification_report(y_test, y_pred, output_dict=True)).transpose()
         clsf_report.to_csv('classification_report.csv', index=True)
         mlflow.log_artifact('classification_report.csv')
 
+        accuracy = accuracy_score(y_test, y_pred)
+        recall = recall_score(y_test, y_pred, average='macro')
+        precision = precision_score(y_test, y_pred, average='macro')
+        f1 = f1_score(y_test, y_pred, average='macro')
 
-def ml_alg(x, y):
-    pass
+        mlflow.log_metric('accuracy', accuracy)
+        mlflow.log_metric('recall', recall)
+        mlflow.log_metric('precision', precision)
+        mlflow.log_metric('f1', f1)
 
 
 if __name__ == '__main__':

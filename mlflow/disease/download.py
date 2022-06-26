@@ -9,7 +9,7 @@ current_dir = os.path.dirname(__file__)
 @click.command(help="Download csv data ...")
 def task():
     with mlflow.start_run() as mlrun:
-        url = 'http://172.27.129.21:7892/temp/heart_disease_uci.csv'
+        url = 'https://github.com/ybz21/MLOpsInAction/raw/master/data/heart_disease_uci.csv'
         file_dir = os.path.join(current_dir, "data")
         filepath = os.path.join(file_dir, "raw.csv")
         os.system(f"mkdir -p {file_dir}")
