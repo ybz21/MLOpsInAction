@@ -1,7 +1,6 @@
 import mlflow
 import click
 
-
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
@@ -24,8 +23,19 @@ def task(data_path):
         lin_model = RidgeClassifier()
         lin_model.fit(x_train, y_train)
 
-        y_preds = lin_model.predict(x_test)
-        print(classification_report(y_test, y_preds))
+        y_pred = lin_model.predict(x_test)
+
+        report = classification_report(y_test, y_pred)
+
+        print(report)
+        # mlflow.log_metric("report",report)
+
+        mlflow.sklearn.log_model(lin_model, "model")
+        mlflow.sklearn.save_model(lin_model, "model")
+
+        clsf_report = pd.DataFrame(classification_report(y_test, y_pred)).transpose()
+        clsf_report.to_csv('classification_report.csv', index=True)
+        mlflow.log_artifact('classification_report.csv')
 
 
 def ml_alg(x, y):
