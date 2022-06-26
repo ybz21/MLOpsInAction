@@ -6,10 +6,10 @@ entry_points:
   download:
     command: "python download.py"
 
-  process:
+  feature:
     parameters:
       file_path: {type: str}
-    command: "python process.py --file_path {file_path}"
+    command: "python feature.py --file_path {file_path}"
 
   train:
     parameters:

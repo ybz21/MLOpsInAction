@@ -15,11 +15,11 @@ def workflow():
         file_path = os.path.join(download_run.info.artifact_uri, "data/raw.csv")
         print("Finish 'download'")
 
-        print("Launching 'process'")
+        print("Launching 'feature'")
         file_path = os.path.join(current_dir, "data/raw.csv")
-        process_run = mlflow.run(".", "process", parameters={"file_path": file_path})
+        process_run = mlflow.run(".", "feature", parameters={"file_path": file_path})
         process_run = mlflow.tracking.MlflowClient().get_run(process_run.run_id)
-        print("Finish 'process'")
+        print("Finish 'feature'")
 
         print("Launching 'train'")
         data_path_uri = os.path.join(current_dir, "data/data.csv")

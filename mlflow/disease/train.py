@@ -8,7 +8,6 @@ from sklearn.linear_model import RidgeClassifier
 from sklearn.metrics import classification_report, accuracy_score, recall_score, precision_score, f1_score
 
 
-@click.command(help="This program does ...")
 @click.option("--data_path")
 def task(data_path):
     with mlflow.start_run() as mlrun:

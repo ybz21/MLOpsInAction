@@ -4,12 +4,10 @@ import os
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.compose import ColumnTransformer
 
 current_dir = os.path.dirname(__file__)
 
 
-@click.command(help="Process csv data ...")
 @click.option("--file_path")
 def task(file_path):
     with mlflow.start_run() as mlrun:
@@ -51,8 +49,6 @@ def task(file_path):
         final_pdf.to_csv(csv_file_path)
 
         mlflow.log_artifacts("data", artifact_path="data")
-
-        # 训练
 
 
 if __name__ == '__main__':
