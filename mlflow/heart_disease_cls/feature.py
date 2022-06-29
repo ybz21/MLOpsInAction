@@ -7,7 +7,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 current_dir = os.path.dirname(__file__)
 
-
+@click.command(help="Run feature")
 @click.option("--file_path")
 def task(file_path):
     with mlflow.start_run() as mlrun:

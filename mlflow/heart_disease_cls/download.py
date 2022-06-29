@@ -6,7 +6,7 @@ import requests
 current_dir = os.path.dirname(__file__)
 
 
-@click.command(help="Download csv data ...")
+@click.command(help="Run download")
 def task():
     with mlflow.start_run() as mlrun:
         url = 'https://github.com/ybz21/MLOpsInAction/raw/master/data/heart_disease_uci.csv'

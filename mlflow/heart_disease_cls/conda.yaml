@@ -1,4 +1,4 @@
-name: multistep
+name: heart_disease_cls
 channels:
   - defaults
 dependencies:

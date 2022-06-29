@@ -1,4 +1,4 @@
-name: heart_disease
+name: heart_disease_cls
 
 conda_env: conda.yaml
 
