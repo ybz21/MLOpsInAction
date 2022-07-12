@@ -1,16 +1,13 @@
 from datetime import timedelta
-# The DAG object; we'll need this to instantiate a DAG
 from airflow import DAG
-# Operators; we need this to operate!
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
-# These args will get passed on to each operator
-# You can override them on a per-task basis during operator initialization
+
 default_args = {
-    'owner': 'Binh Phan',
+    'owner': 'mlops',
     'depends_on_past': False,
     'start_date': days_ago(31),
-    'email': ['example@example.com'],
+    'email': ['mlops@4paradigm.com'],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
@@ -18,7 +15,7 @@ default_args = {
     # 'queue': 'bash_queue',
     # 'pool': 'backfill',
     # 'priority_weight': 10,
-    # 'end_date': datetime(2016, 1, 1),
+    # 'end_date': datetime(2016, 1, 1),bu
     # 'wait_for_downstream': False,
     # 'dag': dag,
     # 'sla': timedelta(hours=2),
@@ -27,10 +24,10 @@ default_args = {
     # 'on_success_callback': some_other_function,
     # 'on_retry_callback': another_function,
     # 'sla_miss_callback': yet_another_function,
-    # 'trigger_rule': 'all_success'
+    'trigger_rule': 'all_success'
 }
 
-#instantiates a directed acyclic graph
+# instantiates a directed acyclic graph
 dag = DAG(
     'ml_pipeline',
     default_args=default_args,
@@ -39,9 +36,9 @@ dag = DAG(
 )
 
 # instantiate tasks using Operators.
-#BashOperator defines tasks that execute bash scripts. In this case, we run Python scripts for each task.
-download_images = BashOperator(
-    task_id='download_images',
+# BashOperator defines tasks that execute bash scripts. In this case, we run Python scripts for each task.
+download_train_data = BashOperator(
+    task_id='download_train_data',
     bash_command='python3 ./download.py --mode train',
     dag=dag,
 )
@@ -52,18 +49,22 @@ train = BashOperator(
     retries=3,
     dag=dag,
 )
-serve_commands = """
-    lsof -i tcp:8008 | awk 'NR!=1 {print $2}' | xargs kill;
-    python3 ./serve.py serve
-    """
-serve = BashOperator(
-    task_id='serve',
+
+download_inference_data = BashOperator(
+    task_id='download_inference_data',
     depends_on_past=False,
-    bash_command=serve_commands,
+    bash_command='python3 ./download.py --mode inference',
     retries=3,
     dag=dag,
 )
 
-#sets the ordering of the DAG. The >> directs the 2nd task to run after the 1st task. This means that
-#download images runs first, then train, then serve.
-download_images >> train >> serve
+inference = BashOperator(
+    task_id='inference',
+    depends_on_past=False,
+    bash_command='python3 ./inference.py',
+    retries=3,
+    dag=dag,
+)
+
+# download images runs first, then train, then down.
+download_train_data >> train >> download_inference_data >> inference

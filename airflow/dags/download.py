@@ -1,18 +1,26 @@
 import os
 import requests
+import argparse
 
 current_dir = os.path.dirname(__file__)
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--mode", type=str, required=False, default='train')
+
 
 def main():
-
-    data_url = 'https://github.com/ybz21/MLOpsInAction/raw/master/data/sms_cls_train.csv'
+    args = parser.parse_args()
 
     data_dir = os.path.join(current_dir, "data")
-    data_path = os.path.join(data_dir, "sms_cls_train.csv")
-
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
+
+    if args.mode == 'train':
+        data_url = 'https://github.com/ybz21/MLOpsInAction/raw/master/data/sms_cls_train.csv'
+        data_path = os.path.join(data_dir, "sms_cls_train.csv")
+    else:
+        data_url = 'https://github.com/ybz21/MLOpsInAction/raw/master/data/sms_cls_inference.csv'
+        data_path = os.path.join(data_dir, "sms_cls_inference.csv")
 
     response = requests.get(data_url)
     with open(data_path, "wb") as f:
