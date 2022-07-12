@@ -2,7 +2,8 @@ import os
 import requests
 import argparse
 
-current_dir = os.path.dirname(__file__)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_dir = os.path.dirname(current_dir)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--mode", type=str, required=False, default='train')
@@ -10,8 +11,7 @@ parser.add_argument("--mode", type=str, required=False, default='train')
 
 def main():
     args = parser.parse_args()
-
-    data_dir = os.path.join(current_dir, "data")
+    data_dir = os.path.join(project_dir, "data")
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
 
@@ -25,6 +25,8 @@ def main():
     response = requests.get(data_url)
     with open(data_path, "wb") as f:
         f.write(response.content)
+
+    print('finish download')
 
 
 if __name__ == '__main__':

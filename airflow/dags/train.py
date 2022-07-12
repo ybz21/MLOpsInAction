@@ -8,7 +8,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.pipeline import Pipeline
 import joblib
 
-current_dir = os.path.dirname(__file__)
+current_dir = os.path.dirname(os.path.abspath(__file__))
 project_dir = os.path.dirname(current_dir)
 
 
@@ -42,6 +42,8 @@ def main():
         os.makedirs(model_dir)
     model_path = os.path.join(model_dir, 'naive_bayes.pkl')
     joblib.dump(pipe_model, model_path)
+
+    print('finish train')
 
 
 if __name__ == '__main__':

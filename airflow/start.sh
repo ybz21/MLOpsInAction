@@ -1,3 +1,6 @@
-# set -ex
-curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.3.3/docker-compose.yaml'
-docker-compose up
+#!/bin/bash
+set -ex
+
+docker build -t apache/airflow:2.3.3_custom .
+
+docker-compose up -d

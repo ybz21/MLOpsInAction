@@ -7,8 +7,9 @@ default_args = {
     'owner': 'mlops',
     'depends_on_past': False,
     'start_date': days_ago(31),
+    # 填入邮箱，方便失败时发送邮件
     'email': ['mlops@4paradigm.com'],
-    'email_on_failure': False,
+    'email_on_failure': True,
     'email_on_retry': False,
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
@@ -31,21 +32,21 @@ default_args = {
 dag = DAG(
     'ml_pipeline',
     default_args=default_args,
-    description='A simple Machine Learning pipeline',
-    schedule_interval=timedelta(days=30),
+    description='A simple Machine Learning pipeline for spam message classification',
+    schedule_interval=timedelta(days=1),
 )
 
-# instantiate tasks using Operators.
-# BashOperator defines tasks that execute bash scripts. In this case, we run Python scripts for each task.
+# 下载训练数据环节，可以用于
 download_train_data = BashOperator(
     task_id='download_train_data',
-    bash_command='python3 ./download.py --mode train',
+    bash_command='python3 /opt/airflow/dags/download.py --mode train',
     dag=dag,
 )
+#
 train = BashOperator(
     task_id='train',
     depends_on_past=False,
-    bash_command='python3 ./train.py',
+    bash_command='python3 /opt/airflow/dags/train.py',
     retries=3,
     dag=dag,
 )
@@ -53,7 +54,7 @@ train = BashOperator(
 download_inference_data = BashOperator(
     task_id='download_inference_data',
     depends_on_past=False,
-    bash_command='python3 ./download.py --mode inference',
+    bash_command='python3 /opt/airflow/dags/download.py --mode inference',
     retries=3,
     dag=dag,
 )
@@ -61,7 +62,7 @@ download_inference_data = BashOperator(
 inference = BashOperator(
     task_id='inference',
     depends_on_past=False,
-    bash_command='python3 ./inference.py',
+    bash_command='python3 /opt/airflow/dags/inference.py',
     retries=3,
     dag=dag,
 )

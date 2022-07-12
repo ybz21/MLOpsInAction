@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import joblib
 
-current_dir = os.path.dirname(__file__)
+current_dir = os.path.dirname(os.path.abspath(__file__))
 project_dir = os.path.dirname(current_dir)
 
 
@@ -18,8 +18,11 @@ def main():
     result = pipe_model.predict(df.text)
     df['type'] = result
     df['label'] = df['type'].map(lambda a: 'spam' if a == 1 else 'ham')
-    
+
+    # 保存推理结果，实际业务中可以上传到hive等数据仓库中
     df.to_csv(result_path, columns=['label', 'text'], index=False)
+
+    print('finish inference')
 
 
 if __name__ == '__main__':
